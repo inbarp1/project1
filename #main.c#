@@ -67,21 +67,12 @@ void run(){
     i++;
   }
 }
-char ** command_reader(FILE * filepointer){
-  char line[256];
-  fgets(line, sizeof(line), filepointer);
-  //printf("line: %s \n", line);
-  char ** ret = parse_args(line);
-  return ret;
-}
+
 		       
 int main(){
   prompt();
   while(1){
     run();
     }
-  /* char ** args = command_reader(stdin);
-  printf("%s\n", args[0]);
-  execvp(args[0], args); */
   return 0;
 }
