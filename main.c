@@ -16,6 +16,28 @@ char ** parse_args( char * line ){
   }
   return args;
 }
+//cd function
+int cd( char *args[]){
+  if (args[1] == NULL) {
+		chdir(getenv("HOME"));
+		printf("Directory changed to home directory. \n");
+		return 1;
+	}
+  // if nothing entered w cd, change to home 
+	else{ 
+		if (chdir(args[1]) !=0) {
+			printf(" %s: no such directory\n", args[1]);
+            return -1;
+	    //directory not found 
+		}
+		else{
+		  printf("Directory changed to specified directory. \n");
+		  //directory changed 
+		}    
+	}
+	return 0;
+}
+
 
 //prints the prompt
 void prompt(){
@@ -50,38 +72,39 @@ void run(){
   args = parse_args(buffer);
   int i = 0;
   while(args[i]){
-    int parent = getpid();
-    int child1 = fork();
     int wow;
     char ** args2 = (char**)calloc(10, sizeof(char *));
     args2 = parse_args(args[i]);
-    execvp(args2[0], args2);
-
-     if(parent == getpid()){
-      int childpid = wait(&wow);
+    printf("%s\n",args2[0]);
+    // exit command quits the shell
+    if(strcmp(args2[0], "exit")== 0){
+      exit(0);
+    }
+    //cd command 
+    if(strcmp(args2[0],"cd") == 0){
+      cd(args2);
     }
     else{
+      int parent = getpid();
+      int child1 = fork();
       execvp(args2[0], args2);
-      exit(wow);
-    }
+      if(parent == getpid()){
+	int childpid = wait(&wow);
+      }
+      else{
+	execvp(args2[0], args2);
+	exit(wow);
+      }
     i++;
+    }
   }
 }
-char ** command_reader(FILE * filepointer){
-  char line[256];
-  fgets(line, sizeof(line), filepointer);
-  //printf("line: %s \n", line);
-  char ** ret = parse_args(line);
-  return ret;
-}
+
 		       
 int main(){
   prompt();
   while(1){
     run();
     }
-  /* char ** args = command_reader(stdin);
-  printf("%s\n", args[0]);
-  execvp(args[0], args); */
   return 0;
 }
