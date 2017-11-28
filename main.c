@@ -50,30 +50,37 @@ void run(){
   args = parse_args(buffer);
   int i = 0;
   while(args[i]){
-    //int parent = getpid();
-    //int child1 = fork();
+    int parent = getpid();
+    int child1 = fork();
     int wow;
     char ** args2 = (char**)calloc(10, sizeof(char *));
     args2 = parse_args(args[i]);
     execvp(args2[0], args2);
 
-    /* if(parent == getpid()){
+     if(parent == getpid()){
       int childpid = wait(&wow);
     }
     else{
       execvp(args2[0], args2);
       exit(wow);
     }
-    i++;*/
+    i++;
   }
 }
+char ** command_reader(FILE * filepointer){
+  char line[256];
+  fgets(line, sizeof(line), filepointer);
+  printf(“s: %s \n”, s);
+  char ** ret = parse_args(line);
+  return ret;
+}
+		       
 int main(){
   prompt();
-  while(1){
+  /*while(1){
     run();
-  }
-  /* char line[100] = "ls -al";
-  char ** args = parse_args( line );
-  execvp(args[0], args);*/
+    }*/
+  char ** args = command_reader(stdin);
+  execvp(args[0], args);
   return 0;
 }
