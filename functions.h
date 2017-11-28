@@ -84,7 +84,7 @@ void run(){
     int wow;
     char ** args2 = (char**)calloc(10, sizeof(char *));
     args2 = parse_args(args[i]);
-    printf("%s\n",args2[0]);
+    //printf("%s\n",args2[0]);
     // exit command quits the shell
     if(strcmp(args2[0], "exit")== 0){
       exit(0);
@@ -92,6 +92,8 @@ void run(){
     //cd command 
     if(strcmp(args2[0],"cd") == 0){
       cd(args2);
+      prompt();
+      exit(0);
     }
     else{
       int parent = getpid();
@@ -104,8 +106,8 @@ void run(){
 	execvp(args2[0], args2);
 	exit(wow);
       }
-    i++;
     }
-  }
+    i++;
+      }
 }
 
