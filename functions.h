@@ -61,7 +61,8 @@ void bufferz( char * buff ){
   fgets(buffer, 1024, stdin);
   int i = 0;
   while(buffer[i] != 0){
-    if(buffer[i] == '/n'){
+    //if(strcmp(buffer[i], "/n") == 0){
+    if(buffer[i] == "/n"){
       buffer[i] = 0;
     }
     else{
@@ -72,7 +73,7 @@ strncpy(buff, buffer, 1024);
 free(buffer);
 //printf("%s", buff);
 }
-
+ 
 void run(){
   char buffer[1024];
   char *p = buffer;
@@ -98,9 +99,12 @@ void run(){
     else{
       int parent = getpid();
       int child1 = fork();
-      execvp(args2[0], args2);
+      //execvp(args2[0], args2);
       if(parent == getpid()){
 	int childpid = wait(&wow);
+	if(strcmp(args2[0],"cd") == 0){
+	  cd(args2);
+	}
       }
       else{
 	execvp(args2[0], args2);
