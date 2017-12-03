@@ -6,10 +6,6 @@
 #include <errno.h>
 #include <sys/wait.h>
 
-char ** parse_args( char * line, char * delimiter );
-int cd( char *args[]);
-void prompt();
-void bufferz(char *buff);
 void run();
 
 //headers
@@ -26,7 +22,7 @@ char ** parse_args( char * line, char * delimeter ){
   }
   return args;
 }
-//cd function
+//cd function that doesnt workkkk
 /*int cd( char ** args){
   if (args[1] == NULL) {
 		chdir(getenv("HOME"));
@@ -81,7 +77,19 @@ void bufferz( char * buff ){
 strncpy(buff, buffer, 1024);
 free(buffer);
 }
- 
+
+char ** redirect(char ** args){
+  char ** args3 = (char**)calloc(sizeof(char*), 20);
+  int i = 0;
+  while(args){
+    if(strcmp(args[i], "<")==0){
+    }
+    if(strcmp(args[i],">")==0){
+      
+    }
+    args3[i] = args[i]
+      
+}
 void run(){
   char buffer[1024];
   char *p = buffer;
@@ -95,12 +103,17 @@ void run(){
     args2 = parse_args(args[i], " ");
     //printf("%s\n",args2[0]);
     // exit command quits the shell
+    char ** args3 (char**)calloc(10,sizeof(char *));
+    args3=redirect(args2);
     if(strcmp(args2[0], "exit")== 0){
+      free(args1);
+      free(args2);
+      free(args3);
       exit(0);
     }
     //cd command 
-    if(strcmp(args2[0],"cd") == 0){
-      cd(args2);
+    if(strcmp(args3[0],"cd") == 0){
+      cd(args3);
       prompt();
       //exit(0);
       }
@@ -115,7 +128,7 @@ void run(){
 	//}
       }
       else{
-	execvp(args2[0], args2);
+	execvp(args3[0], args3);
 	exit(wow);
       }
     }
