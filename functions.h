@@ -22,72 +22,8 @@ char ** parse_args( char * line, char * delimeter ){
   }
   return args;
 }
-//cd function that doesnt workkkk
-/*int cd( char ** args){
-  if (args[1] == NULL) {
-		chdir(getenv("HOME"));
-		printf("Directory changed to home directory. \n");
-		return 1;
-	}   
-  // if nothing entered w cd, change to home
-   else{ 
-		if (chdir(args[1]) !=0) {
-			printf(" %s: no such directory\n", args[1]);
-            return -1;
-	    //directory not found 
-		}
-		else{
-		  printf("Directory changed to specified directory. \n");
-		  //directory changed 
-		}    
-	}
-	return 0;
-}
-*/
-int cd (char ** args) {
-  if (!chdir(args[1])) {
-    return 1;
-  }
-  return 0;
-}
-
-
-//prints the prompt 
-void prompt(){
-  char commandz[1024];
-  getcwd(commandz, 1024);
-  printf("current dir: %s\n", commandz);
-}
-
-//copies input into given buffer
-void bufferz( char * buff ){
-  char * buffer = (char *)calloc(1024,sizeof(char));
-  fgets(buffer, 1024, stdin);
-  // printf("buffer is: %s\n", buff);
-  int i = 0;
-  while(buffer[i] != '\0'){
-    //if(strcmp(buffer[i], "/n") == 0){
-    if(buffer[i]== '\n'){
-      buffer[i] = 0;
     }
-    else{
-      i++;
-    }
-  }
-strncpy(buff, buffer, 1024);
-free(buffer);
-}
-
-char ** redirect(char ** args){
-  char ** args3 = (char**)calloc(sizeof(char*), 20);
-  int i = 0;
-  while(args){
-    if(strcmp(args[i], "<")==0){
-    }
-    if(strcmp(args[i],">")==0){
-      
-    }
-    args3[i] = args[i]
+    args3[i] = args[i];
       
 }
 void run(){
