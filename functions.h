@@ -27,14 +27,14 @@ char ** parse_args( char * line, char * delimeter ){
   return args;
 }
 //cd function
-int cd( char *args[]){
+/*int cd( char ** args){
   if (args[1] == NULL) {
 		chdir(getenv("HOME"));
 		printf("Directory changed to home directory. \n");
 		return 1;
-	}
-  // if nothing entered w cd, change to home 
-	else{ 
+	}   
+  // if nothing entered w cd, change to home
+   else{ 
 		if (chdir(args[1]) !=0) {
 			printf(" %s: no such directory\n", args[1]);
             return -1;
@@ -46,6 +46,13 @@ int cd( char *args[]){
 		}    
 	}
 	return 0;
+}
+*/
+int cd (char ** args) {
+  if (!chdir(args[1])) {
+    return 1;
+  }
+  return 0;
 }
 
 
@@ -93,7 +100,7 @@ void run(){
     }
     //cd command 
     if(strcmp(args2[0],"cd") == 0){
-      cd(&args2[1]);
+      cd(args2);
       prompt();
       //exit(0);
       }
