@@ -60,11 +60,11 @@ void prompt(){
 void bufferz( char * buff ){
   char * buffer = (char *)calloc(1024,sizeof(char));
   fgets(buffer, 1024, stdin);
-   printf("buffer is: %s\n", buff);
+  // printf("buffer is: %s\n", buff);
   int i = 0;
-  while(buffer[i] != 0){
+  while(buffer[i] != '\0'){
     //if(strcmp(buffer[i], "/n") == 0){
-    if(buffer[i] == "/n" || buffer[i] == " "){
+    if(buffer[i]== '\n'){
       buffer[i] = 0;
     }
     else{
@@ -78,9 +78,9 @@ free(buffer);
 void run(){
   char buffer[1024];
   char *p = buffer;
-  //bufferz(buffer);
+  bufferz(buffer);
   char ** args = (char**)calloc(10,sizeof(char *));
-  args = parse_args(bufferz(buffer), ";");
+  args = parse_args(buffer, ";");
   int i = 0;
   while(args[i]){
     int wow;
@@ -93,7 +93,7 @@ void run(){
     }
     //cd command 
     if(strcmp(args2[0],"cd") == 0){
-      cd(args2);
+      cd(&args2[1]);
       prompt();
       //exit(0);
       }
@@ -103,9 +103,9 @@ void run(){
       //execvp(args2[0], args2);
       if(parent == getpid()){
 	int childpid = wait(&wow);
-	if(args2[0] == "cd"){
-	  cd(args2);
-	}
+	//if(args2[0] == "cd"){
+	// cd(args2[1]);
+	//}
       }
       else{
 	execvp(args2[0], args2);
