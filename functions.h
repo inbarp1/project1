@@ -14,6 +14,7 @@ void run();
 
 //headers
 char * rm_whitespace(char * str){
+  // char ** args = (char**)calloc(10,sizeof(char*));
   char * final = str + strlen(str) - 1;
   while(isspace(*str) && *str){ //while more to string and theres space
     str++;
@@ -24,22 +25,32 @@ char * rm_whitespace(char * str){
   return str;
 }
 
-void redirect(char * command, char direction){
+int redirect(char * command, char direction){
   int read_file;
   int written_file;
   int fid;
-  char ** args = (char**)calloc(10,sizeof(char*));
+  char ** args;
   if(direction == '>'){
     args = parse_args(command,">");
-    printf("%s", args[1]);
-    printf("hi\n");
-    written_file = open(args[1], O_TRUNC | O_CREAT | O_WRONLY, 0644);
-    fid = dup(STDOUT_FILENO);
-    dup2(written_file, fid);
+    fid = STDIN_FILENO;
+    int *old = dup(fid);
+    // printf("%s\n", args[1]);
+    // printf("%s\n", args[0]);
+    written_file = open(rm_whitespace(args[1]), O_TRUNC | O_CREAT | O_WRONLY, 0644);
+    dup2(written_file, old);
+    close(written_file);
+    //dup2(written_file, 1);
+    //fid = dup(STDOUT_FILENO);	
+    //fid = dup(0);
+    //fid *= -1;
+    //read_file = dup2(written_file, fid);
+    // fid = dup(STDOUT_FILENO);
+    //dup2(written_file, fid);
     //fid = fcntl(STDOUT_FILENO, F_DUPFD, 0);
     // read_file = fcntl(written_file, F_DUPFD, fid);
     //read_file = dup2(written_file, fid);
-    close(written_file);
+    // close(written_file);
+    //execvp(args[0], args);
   }
   else{
     //printf("no");
@@ -48,6 +59,7 @@ void redirect(char * command, char direction){
     read_file = fcntl(written_file, fid);
     close(written_file);
   }
+  return fid;
 }
 
 
@@ -126,12 +138,18 @@ void run(){
   args = parse_args(buffer, ";");
   int i = 0;
   while(args[i]){
-    char * store = rm_whitespace(args[i]);
-    printf("%s\n", store);
+    if(strchr(args[i], '>') != 0){
+      //  printf("%s", store);
+      redirect(args[i], '>');
+      prompt();
+    }
+    //  char * store = (char *)calloc(10, sizeof(char));
+    // store = rm_whitespace(args[i]);
+    // printf("%s\n", store);
     int wow;
     char ** args2 = (char**)calloc(10, sizeof(char *));
     args2 = parse_args(args[i], " ");
-    printf("%s\n", store);
+    printf("%s\n", args[i]);
     //printf("%s\n",args2[0]);
     // exit command quits the shell
     
@@ -144,13 +162,12 @@ void run(){
       prompt();
       //exit(0);
       }
-    if(args2[1]){
-      if(strcmp(args2[0], ">") == 0){
-	printf("%s", store);
-	redirect(args[i], '>');
-	prompt();
-      }
-    }
+    /*   if(args2[1] && (strchr(args[i], ">") != 0)){
+      printf("hi");
+      printf("%s", store);
+      redirect(args[i], '>');
+      prompt();
+      }*/
     else{
       int parent = getpid();
       int child1 = fork();
