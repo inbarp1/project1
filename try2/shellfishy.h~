@@ -1,0 +1,17 @@
+#ifndef shell 
+#define shell
+
+void copy_ary();
+
+int shud_exit();
+
+int shud_cd();
+
+int shud_redirect();
+
+void copy_ary();
+
+void run_dis();
+
+void redirecting();
+
