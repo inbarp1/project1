@@ -9,7 +9,7 @@ int shud_cd();
 
 int shud_pipe();
 
-int count_tokens();
+int count_tokens(char *line, char delimeter);
 
 char *trim();
 
