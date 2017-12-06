@@ -5,6 +5,7 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <sys/wait.h>
+#include <ctype.h>
 
 char ** parse_args( char * line, char * delimiter );
 int cd( char *args[]);
@@ -27,37 +28,39 @@ char * rm_whitespace(char * str){
 
 int redirect(char * command, char direction){
   int read_file;
-  int written_file;
   int fid;
-  char ** args;
+  int status;
   if(direction == '>'){
-    args = parse_args(command,">");
-    fid = STDIN_FILENO;
-    int *old = dup(fid);
-    // printf("%s\n", args[1]);
-    // printf("%s\n", args[0]);
-    written_file = open(rm_whitespace(args[1]), O_TRUNC | O_CREAT | O_WRONLY, 0644);
-    dup2(written_file, old);
-    close(written_file);
-    //dup2(written_file, 1);
-    //fid = dup(STDOUT_FILENO);	
-    //fid = dup(0);
-    //fid *= -1;
-    //read_file = dup2(written_file, fid);
-    // fid = dup(STDOUT_FILENO);
-    //dup2(written_file, fid);
-    //fid = fcntl(STDOUT_FILENO, F_DUPFD, 0);
-    // read_file = fcntl(written_file, F_DUPFD, fid);
-    //read_file = dup2(written_file, fid);
-    // close(written_file);
-    //execvp(args[0], args);
+    read_file = dup(STDOUT_FILENO);
+    char **args = parse_args(command,">");
+    printf("%s\n", rm_whitespace(args[1]));
+    int written_file = open(rm_whitespace(args[1]), O_WRONLY | O_CREAT, 0644);
+    fid = dup2(written_file, STDOUT_FILENO);
+    printf("hi3\n");
+    int child = fork();
+    if(child){
+      wait(&status);
+    }
+    else{
+      execvp(args[0], args);
+      exit(0);
+    }
+    dup2(read_file, written_file);
   }
   else{
-    //printf("no");
-    written_file = open(args[1], O_RDONLY, 0644);
-    fid = dup(STDOUT_FILENO);
-    read_file = fcntl(written_file, fid);
-    close(written_file);
+    read_file = dup(STDIN_FILENO);
+    char **args = parse_args(command,"<");
+    int written_file = open(rm_whitespace(args[1]), O_TRUNC | O_CREAT | O_WRONLY, 0644);
+    fid = dup2(written_file, STDIN_FILENO);
+    int child = fork();
+    if(child){
+      wait(&status);
+    }
+    else{
+      execvp(args[0], args);
+      exit(0);
+    }
+    dup2(read_file, written_file);
   }
   return fid;
 }
@@ -138,14 +141,15 @@ void run(){
   args = parse_args(buffer, ";");
   int i = 0;
   while(args[i]){
+    int pipez[2];
+    pipe(pipez);
     if(strchr(args[i], '>') != 0){
-      //  printf("%s", store);
-      redirect(args[i], '>');
+      printf("hi2\n");
+      int later = redirect(args[i], '>');
+      //write(pipez[1], &later, sizeof(int));
+      //close(pipez[1]);
       prompt();
     }
-    //  char * store = (char *)calloc(10, sizeof(char));
-    // store = rm_whitespace(args[i]);
-    // printf("%s\n", store);
     int wow;
     char ** args2 = (char**)calloc(10, sizeof(char *));
     args2 = parse_args(args[i], " ");
